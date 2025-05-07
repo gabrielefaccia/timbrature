@@ -86,7 +86,7 @@
           "Authorization": "Basic " + basicToken,
           "Content-Type": "application/json"
         }
-      })
+      }
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -98,7 +98,7 @@
         } else {
           document.getElementById("loginMessage").innerText = "Accesso negato.";
         }
-      });
+      };
     }
 
     function timbra() {
@@ -118,7 +118,7 @@
 
             const payload = {
               elementType: "Timbrature",
-              element: JSON.stringify({
+              element: {
                 tipo_timbratura: tipo,
                 latitudine: lat,
                 longitudine: lon,
@@ -126,7 +126,7 @@
                 data: dataStr,
                 ora: ora,
                 assigned_user_id: userId
-              })
+              }
             };
 
             fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
@@ -136,7 +136,7 @@
                 "Content-Type": "application/json"
               },
               body: JSON.stringify(payload)
-            })
+            }
             .then(res => res.json())
             .then(data => {
               if (data.success) {
@@ -147,11 +147,11 @@
               } else {
                 document.getElementById("responseMessage").innerText = "Errore: " + data.error.message;
               }
-            });
-        });
+            };
+        };
       }, () => {
         document.getElementById("responseMessage").innerText = "Errore: posizione non disponibile.";
-      });
+      };
     }
 
     function logout() {
