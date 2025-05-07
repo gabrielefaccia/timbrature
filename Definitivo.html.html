@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timbratura Presenze</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    header {
+      width: 100%;
+      background: #fff;
+      padding: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    header img {
+      max-width: 90%;
+      height: auto;
+    }
+    h1 {
+      font-size: 24px;
+      margin-top: 20px;
+      color: #0A3D62;
+    }
+    #clock {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    #confirmMessage {
+      font-size: 18px;
+      color: green;
+      margin-bottom: 15px;
+      display: none;
+    }
+    button {
+      background-color: #0A3D62;
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #145A8C;
+    }
+    @media (max-width: 600px) {
+      #clock {
+        font-size: 36px;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAYAPoDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+uWv/EGpX2q3GleHYbcta8Xd9dE+VC2M7QByzY69hXU14hrHiGTTvC934atg/wDa93qdwt0APmKl8j67gVA9s1vQp87/AK+858RV9mtf68jo4/H76ZqIivPEujahCGxKEtpY2X/dZQymt7/hZ3hD/oLD/vzJ/wDE1iJ4F1LSvDlhbaYmjJOiNLfXF/AJCWPOBlThRz+VYs13c6B4SvfFeoroV9YRwsLWO204KZZidqkkoCFB5z7VrKNFrm/r8jGEq6aj3+f6noeoeOfC+kvHHqOuWdrLIgkWKaTa4UjIJXqPxqn/AMLP8Ef9DPp3/f2vJfA3w+1TV/Bl74ouNO07VNe1eYPb/wBrgtGkWSWkIxyW5x7Yre0b4beIW1i1Gs+G/A6advzcG3syZNvoueMnpntXGdx67pmqWOs2Ed/p1zHc2smdksZyrYODj8Qat15J8TI4dN1rwbpVtDqyaYRdI1lobGOVgqKVCqpGQDz9M1w39uS6Trd3tvdesNOttZ0otFq1w/nRxkSGTcMn5TjOO4xQB9KUV5Q2t6X45+KK6dpeuTz6ZJoUgm+xXDR7ZBMpyCOjYxz6Gs7w1oAWXxpdtrGtSPot1cQWiyahIy7RDkbgTyck/pQB7RRXzZb6joa+FvDl1ZeLtUm8Ry3VoLm1bUpWHLjeCh4q3/Z015oul6nJretrcX3ik6dME1CRV8kyOMKM8HAHNAH0RRXznq5uNK1a90dL/wAQXVlD4igg8u3u5HuXjNuzFFOckk9q1NEewPijX7K/u/FGlaLHoyXEo1W7kjnRhMDvU5JAOAOOvI70Ae8UV8+eCtT0m6j8Qaknia9+0y2lyulaXPqEkskaLGxMj5ON5CkgdhVfQ9R0e91SNPFvirUrCIaNYPBs1CSLe7R/OTjqen50AfRdFfPPhHXPF0tzo0HhzVPtbGC9mMF/KzpdIlxhQWPIbaeG/pV7S9d1u88ZWsl8moac0/iZVaxnmb5E+zk7PQrkZHY9aAPeKK4D4y3dxY/Da8ntbmW3lE8A8yKUxkAyKD8w5HFcZ8N7+KfxvZxrqMMxKSfIviCa6J+Q/wDLNlAP9OtAHuVFcH8WLLUbrwtby2F8lmlreJPdSPem1BhCsCu8cjJIryNvF8sHhjxJpVjPmX7Cl2L+DWJrp0xPGuwMwG37xPHrQB9MUV4Hpt34Xu9Y8R/8JV4w1Owu4tWmjghTUpYlEQxjCjjru/Kt/Q/GWg+HvHmrw3viMjSW06x+wPdXDOJF2ElgT1JBBJ75oA9dor5o0/VptSuNFF7ceJNQtJYb6Qx6RO5lbFwdrHDDKgf0qnPrVw2kR3FrqOrRaTPrjpA2oajJCxiEIyrSAkjDfWgD6jorwrwjcaTd6dr39qa48VjFbJLNNa6/NPIgVweMgbcnA45Ocd6f8LbnQ9V1O/uJ/E14Zb1ZYrDTJtRkkkghCndIxJxvIBP+yP0APcqK+fvDWoeGLr4kFovFt/HpFjIsNvBdalLI2oTk8NjOBGDjH97jtkVj3F5I/hnxBfSr40k1CG5uhFe208n2OPa527ju4A78UAfTNFZ2gO0nhzS5HYu7WkRZmOSSUHJNaNABXMa94KtNX1SDWLaZrHVoCClykYcNjpuU8HHr1ooqoycXdEyhGatIil8K6vqq+RrviJ7my/jtrW3EAlHozAkkewxXTJaW6Wa2iwRi2VPLEW0bduMYx6YooolNy3FGCjsPiijgiSKJFjjRQqIgwFA6ADsKfRRUljWjjZ1dkUumdrEcrnrio5LS2lLGS3ictgsWQHOOmaKKACKztYH3w20MbYxlEAOPwp4hiXftjQeYcvhR8319aKKAIRp1irBls7cEHIIiXj9KkFtAFCiGPaG3gbBgN6/X3oooAPs0G/f5Me/du3bBnPr9aJLaCYsZII3LDaSyA5HXFFFADEsLONtyWkCnBGRGB/SkbT7J8brS3bAAGYwcD06UUUASR2tvCVMUESFQQCqAYB605oo3dWeNGZTlSVBIPtRRQASxRzIUljSRD1VxkVHFZWkLh4rWGNx0ZYwDRRQBJLDFOmyaNJE67XUEfrUS6fZKGC2luAwwcRjkflRRQAjafZOxZrO3ZickmJST+lK2n2TkFrS3YgADMYOAO3SiigB8drbwlTHBEhUEAqgGAetNaxtHBDWsBBbcQYx19frRRQAgsLNVZRaQBW+8BGMH68UJYWcbbktIFOCMrGBwetFFACLp1irBls7cEHIIiXj9KlFvCImiEMfltncm0YOeuRRRQA8AKoAAAHAA7UtFFAH/2Q==" alt="CF Automazioni e Sicurezza">
+  </header>
+  <h1>Timbratura Presenze</h1>
+  <div id="clock"></div>
+  <div id="confirmMessage">Timbratura registrata con successo!</div>
+  <button onclick="registerTime()">Timbra Ora</button>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('it-IT');
+      document.getElementById('clock').textContent = timeString;
+    }
+
+    function registerTime() {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latitudine = position.coords.latitude;
+        const longitudine = position.coords.longitude;
+
+        const now = new Date();
+        const data = now.toISOString().split('T')[0];
+        const ora = now.toTimeString().split(' ')[0];
+
+        const credentials = btoa("nomeutente:accessKey");
+
+        fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
+          method: "POST",
+          headers: {
+            "Authorization": `Basic ${credentials}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            elementType: "Timbrature",
+            element: JSON.stringify({
+              tipo_timbratura: "Entrata",
+              latitudine: latitudine,
+              longitudine: longitudine,
+              indirizzo: "Indirizzo da geocodificare",
+              data: data,
+              ora: ora,
+              assigned_user_id: "19x1"
+            })
+          })
+        }).then(response => {
+          if (response.ok) {
+            document.getElementById('confirmMessage').style.display = 'block';
+            setTimeout(() => {
+              document.getElementById('confirmMessage').style.display = 'none';
+            }, 3000);
+          } else {
+            alert("Errore nella timbratura");
+          }
+        });
+      }, function() {
+        alert("Impossibile ottenere la posizione.");
+      });
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
