@@ -103,55 +103,53 @@
 
     function timbra() {
       const tipo = document.getElementById("tipo").value;
-      
-navigator.geolocation.getCurrentPosition(position => {
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
-  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-    .then(res => res.json())
-    .then(data => {
-      const address = data.display_name || "Indirizzo non trovato";
-
+      navigator.geolocation.getCurrentPosition(position => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
-        const now = new Date();
-        const data = now.toISOString().split("T")[0];
-        const ora = now.toTimeString().split(" ")[0];
 
-        const payload = {
-          elementType: "Timbrature",
-          element: JSON.stringify({
-            tipo_timbratura: tipo,
-            latitudine: lat,
-            longitudine: lon,
-            indirizzo: "Da geocodificare",
-            data: data,
-            ora: ora,
-            assigned_user_id: userId
-          })
-        };
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+          .then(res => res.json())
+          .then(data => {
+            const address = data.display_name || "Indirizzo non trovato";
 
-              fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
-          method: "POST",
-          headers: {
-            "Authorization": "Basic " + basicToken,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            const msg = document.getElementById("responseMessage");
-            msg.innerText = "Timbratura registrata con successo!";
-            msg.className = "success";
-            setTimeout(() => msg.innerText = "", 3000);
-          } else {
-            document.getElementById("responseMessage").innerText = "Errore: " + data.error.message;
-          }
+            const now = new Date();
+            const dataStr = now.toISOString().split("T")[0];
+            const ora = now.toTimeString().split(" ")[0];
+
+            const payload = {
+              elementType: "Timbrature",
+              element: JSON.stringify({
+                tipo_timbratura: tipo,
+                latitudine: lat,
+                longitudine: lon,
+                indirizzo: address,
+                data: dataStr,
+                ora: ora,
+                assigned_user_id: userId
+              })
+            };
+
+            fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
+              method: "POST",
+              headers: {
+                "Authorization": "Basic " + basicToken,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                const msg = document.getElementById("responseMessage");
+                msg.innerText = "Timbratura registrata con successo!";
+                msg.className = "success";
+                setTimeout(() => msg.innerText = "", 3000);
+              } else {
+                document.getElementById("responseMessage").innerText = "Errore: " + data.error.message;
+              }
+            });
         });
-          });
-  }, () => {
+      }, () => {
         document.getElementById("responseMessage").innerText = "Errore: posizione non disponibile.";
       });
     }
@@ -176,5 +174,3 @@ navigator.geolocation.getCurrentPosition(position => {
   </script>
 </body>
 </html>
-
-    });
