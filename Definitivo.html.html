@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timbratura Geolocalizzata</title>
+  <title>Timbratura Presenze</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -43,8 +43,9 @@
   <header>
     <img src="data:image/jpeg;base64,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" alt="CF Automazioni e Sicurezza">
   </header>
-  <div class="container" id="loginForm">
-    <h2>Login vtenext</h2>
+
+  <div class="container" id="loginForm" style="display:none;">
+    <h2>Login</h2>
     <input type="text" id="username" placeholder="Nome utente" required>
     <input type="password" id="password" placeholder="Password" required>
     <button onclick="login()">Accedi</button>
@@ -60,9 +61,17 @@
     </select>
     <button onclick="timbra()">Timbra Ora</button>
     <p id="responseMessage" class="success"></p>
+    <button onclick="logout()">Logout</button>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js">
+    function logout() {
+      localStorage.removeItem("sessionName");
+      localStorage.removeItem("userId");
+      location.reload();
+    }
+    </script>
+
   <script>
     let sessionName = "";
     let userId = "";
@@ -94,6 +103,8 @@
         if (data.success) {
           sessionName = data.result.sessionName;
           userId = data.result.userId;
+          localStorage.setItem("sessionName", sessionName);
+          localStorage.setItem("userId", userId);
           document.getElementById("loginForm").style.display = "none";
           document.getElementById("timbraturaForm").style.display = "block";
         } else {
@@ -133,18 +144,39 @@
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            document.getElementById("responseMessage").innerText = "Timbratura registrata con successo.";
-            document.getElementById("responseMessage").className = "success";
+            document.getElementById("responseMessage").innerText = "Timbratura registrata con successo!";
+document.getElementById("responseMessage").classList.add("success");
+setTimeout(() => {
+  document.getElementById("responseMessage").innerText = "";
+}, 3000);
           } else {
             document.getElementById("responseMessage").innerText = "Errore: " + data.error.message;
-            document.getElementById("responseMessage").className = "error";
           }
         });
       }, () => {
         document.getElementById("responseMessage").innerText = "Errore: posizione non disponibile.";
-        document.getElementById("responseMessage").className = "error";
       });
     }
-  </script>
+
+    window.onload = function() {
+      const storedSession = localStorage.getItem("sessionName");
+      const storedUser = localStorage.getItem("userId");
+
+      if (storedSession && storedUser) {
+        sessionName = storedSession;
+        userId = storedUser;
+        document.getElementById("timbraturaForm").style.display = "block";
+      } else {
+        document.getElementById("loginForm").style.display = "block";
+      }
+    }
+  
+    function logout() {
+      localStorage.removeItem("sessionName");
+      localStorage.removeItem("userId");
+      location.reload();
+    }
+    </script>
+
 </body>
 </html>
