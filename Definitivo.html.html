@@ -94,27 +94,7 @@
           localStorage.setItem("vte_userId", userId);
           localStorage.setItem("vte_token", basicToken);
           document.getElementById("loginForm").style.display = "none";
-          
-        fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/login", {
-          method: "POST",
-          headers: {
-            "Authorization": "Basic " + storedToken,
-            "Content-Type": "application/json"
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            basicToken = storedToken;
-            userId = data.result.user.id;
-            document.getElementById("timbraturaForm").style.display = "block";
-          } else {
-            localStorage.removeItem("vte_userId");
-            localStorage.removeItem("vte_token");
-            document.getElementById("loginForm").style.display = "block";
-          }
-        });
-
+          document.getElementById("timbraturaForm").style.display = "block";
         } else {
           document.getElementById("loginMessage").innerText = "Accesso negato.";
         }
@@ -180,13 +160,12 @@
       location.reload();
     }
 
+    
     window.onload = function() {
       const storedToken = localStorage.getItem("vte_token");
       const storedId = localStorage.getItem("vte_userId");
+
       if (storedToken && storedId) {
-        basicToken = storedToken;
-        userId = storedId;
-        
         fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/login", {
           method: "POST",
           headers: {
@@ -205,12 +184,17 @@
             localStorage.removeItem("vte_token");
             document.getElementById("loginForm").style.display = "block";
           }
+        })
+        .catch(err => {
+          console.error("Errore login automatico:", err);
+          localStorage.removeItem("vte_userId");
+          localStorage.removeItem("vte_token");
+          document.getElementById("loginForm").style.display = "block";
         });
-
       } else {
         document.getElementById("loginForm").style.display = "block";
       }
-    }
-  </script>
+    };
+</script>
 </body>
 </html>
