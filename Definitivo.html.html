@@ -4,71 +4,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DEBUG Login vtenext REST</title>
+  <title>Timbratura REST diretta</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       padding: 20px;
+      text-align: center;
     }
     .container {
-      max-width: 600px;
-      margin: auto;
+      max-width: 500px;
+      margin: 0 auto;
       background: white;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    input, button {
+    input, select, button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       font-size: 16px;
+      box-sizing: border-box;
     }
-    pre {
-      background: #eee;
-      padding: 10px;
-      overflow-x: auto;
-    }
+    .success { color: green; }
+    .error { color: red; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Debug Login vtenext</h2>
+  <div class="container" id="loginForm">
+    <h2>Login per timbratura</h2>
     <input type="text" id="username" placeholder="Nome utente">
     <input type="password" id="accessKey" placeholder="Access Key">
-    <button onclick="testLogin()">Testa Login</button>
-    <h3>Risposta JSON</h3>
-    <pre id="output">...</pre>
+    <button onclick="accedi()">Accedi</button>
+    <p id="loginMessage" class="error"></p>
+  </div>
+
+  <div class="container" id="timbraturaForm" style="display:none;">
+    <h3>Timbratura</h3>
+    <select id="tipo">
+      <option value="Entrata">Entrata</option>
+      <option value="Uscita">Uscita</option>
+    </select>
+    <button onclick="timbra()">Timbra Ora</button>
+    <p id="esito" class="success"></p>
+    <button onclick="logout()">Logout</button>
   </div>
 
   <script>
-    function testLogin() {
+    let basicToken = "";
+    let assignedUserId = "";
+
+    function accedi() {
       const username = document.getElementById("username").value;
       const accessKey = document.getElementById("accessKey").value;
-      const basicToken = btoa(username + ":" + accessKey);
+      basicToken = btoa(username + ":" + accessKey);
+      assignedUserId = "19x" + Math.floor(Math.random() * 1000); // fallback temporaneo
 
-      const payload = {
-        elementType: "Users",
-        fields: ["id", "user_name", "email1"],
-        conditions: [["user_name", "equals", username]]
-      };
-
-      fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/query", {
-        method: "POST",
+      // Prova una chiamata base a /me o simile
+      fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/listtypes", {
+        method: "GET",
         headers: {
-          "Authorization": "Basic " + basicToken,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
+          "Authorization": "Basic " + basicToken
+        }
       })
       .then(res => res.json())
       .then(data => {
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+        if (data.success) {
+          document.getElementById("loginForm").style.display = "none";
+          document.getElementById("timbraturaForm").style.display = "block";
+        } else {
+          document.getElementById("loginMessage").innerText = "Accesso negato.";
+        }
       })
       .catch(err => {
-        document.getElementById("output").textContent = "Errore: " + err;
+        document.getElementById("loginMessage").innerText = "Errore di rete.";
       });
+    }
+
+    function timbra() {
+      const tipo = document.getElementById("tipo").value;
+      navigator.geolocation.getCurrentPosition(pos => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(res => res.json())
+        .then(data => {
+          const indirizzo = data.display_name || "Indirizzo non trovato";
+          const now = new Date();
+          const dataStr = now.toISOString().split("T")[0];
+          const ora = now.toTimeString().split(" ")[0];
+
+          const record = {
+            elementType: "Timbrature",
+            element: {
+              tipo_timbratura: tipo,
+              latitudine: lat,
+              longitudine: lon,
+              indirizzo: indirizzo,
+              data: dataStr,
+              ora: ora,
+              assigned_user_id: assignedUserId
+            }
+          };
+
+          fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
+            method: "POST",
+            headers: {
+              "Authorization": "Basic " + basicToken,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(record)
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById("esito").innerText = "Timbratura registrata con successo!";
+            } else {
+              document.getElementById("esito").innerText = "Errore: " + data.error.message;
+            }
+          });
+        });
+      }, () => {
+        document.getElementById("esito").innerText = "Errore: Geolocalizzazione non disponibile.";
+      });
+    }
+
+    function logout() {
+      basicToken = "";
+      document.getElementById("timbraturaForm").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
     }
   </script>
 </body>
