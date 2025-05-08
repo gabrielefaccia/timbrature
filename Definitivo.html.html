@@ -34,6 +34,7 @@
     .error {
       color: red;
       font-weight: bold;
+      font-size: 18px;
       margin-top: 20px;
     }
     .info {
@@ -80,7 +81,7 @@
         <option value="Uscita">Uscita</option>
       </select>
       <button onclick="timbra()">Timbra Ora</button>
-      <p id="esito" class="success"></p>
+      <p id="messaggioBox" class=""></p>
       <div class="info" id="infoBox"></div>
       <pre id="debugLog"></pre>
       <button onclick="logout()">Logout</button>
@@ -163,25 +164,23 @@
           })
           .then(res => res.json())
           .then(data => {
+            const msg = document.getElementById("messaggioBox");
             if (data.success) {
-              document.getElementById("esito").style.display = "block";
-              document.getElementById("esito").style.backgroundColor = "#e6ffe6";
-              document.getElementById("esito").style.border = "1px solid green";
-              document.getElementById("esito").style.padding = "10px";
-              document.getElementById("esito").innerText = "Timbratura registrata con successo!";
-              document.getElementById("esito").className = "success";
+              msg.className = "success";
+              msg.innerText = "Timbratura registrata con successo!";
               document.getElementById("infoBox").innerText = `Data/Ora: ${dataStr} ${ora}\nIndirizzo: ${indirizzo}`;
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             } else {
-              document.getElementById("esito").className = "error";
-              document.getElementById("esito").innerText = "Errore: " + data.error.message;
+              msg.className = "error";
+              msg.innerText = "Errore: " + data.error.message;
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             }
           });
         });
       }, () => {
-        document.getElementById("esito").className = "error";
-        document.getElementById("esito").innerText = "Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.";
+        const msg = document.getElementById("messaggioBox");
+        msg.className = "error";
+        msg.innerText = "Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.";
         document.getElementById("infoBox").innerText = "";
       });
     }
@@ -192,7 +191,7 @@
       document.getElementById("timbraturaBox").style.display = "none";
       document.getElementById("loginBox").style.display = "block";
       document.getElementById("infoBox").innerText = "";
-      document.getElementById("esito").innerText = "";
+      document.getElementById("messaggioBox").innerText = "";
       document.getElementById("debugLog").textContent = "";
     }
   </script>
