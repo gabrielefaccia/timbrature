@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <div class="="container" id="loginBox">
+  <div class="container" id="loginBox">
     <h2>Accesso Timbratura</h2>
     <input type="text" id="username" placeholder="Nome utente (es. gabriele.faccia)">
     <input type="password" id="accessKey" placeholder="Access Key">
@@ -85,8 +85,8 @@
             element: {
               timbrature_name: "timbratura mobile",
               tipo_timbratura: tipo,
-              latitudine: lat,
-              longitudine: lon,
+              latitudine: lat.toString(),
+              longitudine: lon.toString(),
               indirizzo: indirizzo,
               data: dataStr,
               ora: ora,
