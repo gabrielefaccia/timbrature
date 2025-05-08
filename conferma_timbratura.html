@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conferma Timbratura</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      padding: 30px;
+      max-width: 400px;
+      margin: 100px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: green;
+      font-size: 24px;
+    }
+    p {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    .back-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Timbratura avvenuta con successo</h1>
+    <p id="dettagli"></p>
+    <button onclick="history.back()" class="back-btn">Torna alla timbratura</button>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = urlParams.get("data");
+    const ora = urlParams.get("ora");
+    const indirizzo = urlParams.get("indirizzo");
+    if (data && ora && indirizzo) {
+      document.getElementById("dettagli").innerText = `Data: ${data} Ora: ${ora}\nIndirizzo: ${indirizzo}`;
+    }
+  </script>
+</body>
+</html>
