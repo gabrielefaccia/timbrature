@@ -166,21 +166,21 @@
           .then(data => {
             const msg = document.getElementById("messaggioBox");
             if (data.success) {
-              msg.className = "success";
-              msg.innerText = "Timbratura registrata con successo!";
+              alert("Timbratura registrata con successo!");
+              msg.innerText = "";
               document.getElementById("infoBox").innerText = `Data/Ora: ${dataStr} ${ora}\nIndirizzo: ${indirizzo}`;
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             } else {
-              msg.className = "error";
-              msg.innerText = "Errore: " + data.error.message;
+              alert("Errore: " + data.error.message);
+              msg.innerText = "";
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             }
           });
         });
       }, () => {
         const msg = document.getElementById("messaggioBox");
-        msg.className = "error";
-        msg.innerText = "Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.";
+        alert("Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.");
+        msg.innerText = "";
         document.getElementById("infoBox").innerText = "";
       });
     }
