@@ -4,26 +4,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Timbratura REST - Solo Create</title>
+  <title>Debug Create Timbratura</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; padding: 20px; }
-    .box { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
+    .container { background: white; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
     input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-    .success { color: green; }
-    .error { color: red; }
+    pre { text-align: left; background: #eee; padding: 10px; overflow-x: auto; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>Invio diretto Timbratura</h2>
-    <input type="text" id="auth" placeholder="Authorization (es: Basic ZXXX...)">
-    <input type="text" id="userId" placeholder="ID utente assegnato (es: 19x5)">
-    <button onclick="inviaTimbratura()">Invia timbratura</button>
-    <p id="esito" class="success"></p>
+  <div class="container">
+    <h2>Debug Create Timbratura</h2>
+    <input type="text" id="auth" placeholder="Authorization header (es. Basic XXX)">
+    <input type="text" id="userId" placeholder="assigned_user_id (es. 19x5)">
+    <button onclick="submit()">Invia Timbratura</button>
+    <h3>Risposta:</h3>
+    <pre id="response">...</pre>
   </div>
 
   <script>
-    function inviaTimbratura() {
+    function submit() {
       const auth = document.getElementById("auth").value;
       const userId = document.getElementById("userId").value;
 
@@ -32,51 +32,44 @@
         const lon = pos.coords.longitude;
 
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+        .then(res => res.json())
+        .then(data => {
+          const indirizzo = data.display_name || "Indirizzo non trovato";
+          const now = new Date();
+          const dataStr = now.toISOString().split("T")[0];
+          const ora = now.toTimeString().split(" ")[0];
+
+          const payload = {
+            elementType: "Timbrature",
+            element: {
+              tipo_timbratura: "Entrata",
+              latitudine: lat,
+              longitudine: lon,
+              indirizzo: indirizzo,
+              data: dataStr,
+              ora: ora,
+              assigned_user_id: userId
+            }
+          };
+
+          fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
+            method: "POST",
+            headers: {
+              "Authorization": auth,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          })
           .then(res => res.json())
           .then(data => {
-            const indirizzo = data.display_name || "Indirizzo non trovato";
-            const now = new Date();
-            const dataStr = now.toISOString().split("T")[0];
-            const ora = now.toTimeString().split(" ")[0];
-
-            const payload = {
-              elementType: "Timbrature",
-              element: {
-                tipo_timbratura: "Entrata",
-                latitudine: lat,
-                longitudine: lon,
-                indirizzo: indirizzo,
-                data: dataStr,
-                ora: ora,
-                assigned_user_id: userId
-              }
-            };
-
-            fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
-              method: "POST",
-              headers: {
-                "Authorization": auth,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                document.getElementById("esito").textContent = "Timbratura inviata con successo!";
-              } else {
-                document.getElementById("esito").textContent = "Errore: " + data.error.message;
-                document.getElementById("esito").className = "error";
-              }
-            })
-            .catch(err => {
-              document.getElementById("esito").textContent = "Errore fetch: " + err;
-              document.getElementById("esito").className = "error";
-            });
+            document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+          })
+          .catch(err => {
+            document.getElementById("response").textContent = "Errore fetch: " + err;
           });
+        });
       }, () => {
-        document.getElementById("esito").textContent = "Geolocalizzazione negata.";
-        document.getElementById("esito").className = "error";
+        document.getElementById("response").textContent = "Errore: Geolocalizzazione negata.";
       });
     }
   </script>
