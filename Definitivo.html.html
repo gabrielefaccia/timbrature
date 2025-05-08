@@ -4,19 +4,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Timbratura Mobile (ID fisso)</title>
+  <title>Timbratura Mobile</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
     .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-    select { width: 100%; padding: 10px; margin: 10px 0; }
+    input, button, select { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
     .success { color: green; }
     .error { color: red; }
-    pre { text-align: left; background: #eee; padding: 10px; overflow-x: auto; font-size: 14px; }
+    .info { font-weight: bold; margin-top: 10px; }
+    pre { background: #eee; padding: 10px; overflow-x: auto; text-align: left; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="container" id="loginBox">
+  <div class="="container" id="loginBox">
     <h2>Accesso Timbratura</h2>
     <input type="text" id="username" placeholder="Nome utente (es. gabriele.faccia)">
     <input type="password" id="accessKey" placeholder="Access Key">
@@ -32,6 +32,7 @@
     </select>
     <button onclick="timbra()">Timbra Ora</button>
     <p id="esito" class="success"></p>
+    <div class="info" id="infoBox"></div>
     <pre id="debugLog"></pre>
     <button onclick="logout()">Logout</button>
   </div>
@@ -47,7 +48,6 @@
       currentUsername = username;
       basicToken = btoa(username + ":" + accessKey);
 
-      // Test semplice con fetch a un endpoint esistente
       fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
         method: "OPTIONS",
         headers: {
@@ -106,7 +106,8 @@
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              document.getElementById("esito").innerText = "Timbratura registrata!";
+              document.getElementById("esito").innerText = "Timbratura registrata con successo!";
+              document.getElementById("infoBox").innerText = `Data/Ora: ${dataStr} ${ora}\nIndirizzo: ${indirizzo}`;
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             } else {
               document.getElementById("esito").className = "error";
@@ -116,7 +117,9 @@
           });
         });
       }, () => {
-        document.getElementById("esito").innerText = "Geolocalizzazione negata.";
+        document.getElementById("esito").className = "error";
+        document.getElementById("esito").innerText = "Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.";
+        document.getElementById("infoBox").innerText = "";
       });
     }
 
@@ -125,6 +128,9 @@
       currentUsername = "";
       document.getElementById("timbraturaBox").style.display = "none";
       document.getElementById("loginBox").style.display = "block";
+      document.getElementById("infoBox").innerText = "";
+      document.getElementById("esito").innerText = "";
+      document.getElementById("debugLog").textContent = "";
     }
   </script>
 </body>
