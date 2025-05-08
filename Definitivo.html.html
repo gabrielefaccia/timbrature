@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Timbratura Mobile</title>
+  <title>Timbratura Mobile (ID fisso)</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
     .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -20,7 +20,7 @@
     <h2>Accesso Timbratura</h2>
     <input type="text" id="username" placeholder="Nome utente (es. gabriele.faccia)">
     <input type="password" id="accessKey" placeholder="Access Key">
-    <button onclick="login()">Accedi</button>
+    <button onclick="accedi()">Accedi</button>
     <p id="loginMsg" class="error"></p>
   </div>
 
@@ -38,41 +38,30 @@
 
   <script>
     let basicToken = "";
-    let assignedUserId = "";
     let currentUsername = "";
+    const assignedUserId = "19x4";
 
-    function login() {
+    function accedi() {
       const username = document.getElementById("username").value;
       const accessKey = document.getElementById("accessKey").value;
-      basicToken = btoa(username + ":" + accessKey);
       currentUsername = username;
+      basicToken = btoa(username + ":" + accessKey);
 
-      const payload = {
-        elementType: "Users",
-        fields: ["id"],
-        conditions: [["user_name", "equals", username]]
-      };
-
-      fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/query", {
-        method: "POST",
+      // Test semplice con fetch a un endpoint esistente
+      fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
+        method: "OPTIONS",
         headers: {
-          "Authorization": "Basic " + basicToken,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.result.length > 0) {
-          assignedUserId = data.result[0].id;
+          "Authorization": "Basic " + basicToken
+        }
+      }).then(res => {
+        if (res.status === 200 || res.status === 401) {
           document.getElementById("loginBox").style.display = "none";
           document.getElementById("timbraturaBox").style.display = "block";
         } else {
-          document.getElementById("loginMsg").innerText = "Credenziali non valide o utente non trovato.";
+          document.getElementById("loginMsg").innerText = "Accesso negato.";
         }
-      })
-      .catch(err => {
-        document.getElementById("loginMsg").innerText = "Errore: " + err;
+      }).catch(err => {
+        document.getElementById("loginMsg").innerText = "Errore di rete.";
       });
     }
 
@@ -117,7 +106,7 @@
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              document.getElementById("esito").innerText = "Timbratura registrata con successo!";
+              document.getElementById("esito").innerText = "Timbratura registrata!";
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             } else {
               document.getElementById("esito").className = "error";
@@ -127,16 +116,15 @@
           });
         });
       }, () => {
-        document.getElementById("esito").innerText = "Errore: Geolocalizzazione non disponibile.";
+        document.getElementById("esito").innerText = "Geolocalizzazione negata.";
       });
     }
 
     function logout() {
       basicToken = "";
-      assignedUserId = "";
       currentUsername = "";
-      document.getElementById("loginBox").style.display = "block";
       document.getElementById("timbraturaBox").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
     }
   </script>
 </body>
