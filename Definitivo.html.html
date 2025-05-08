@@ -2,30 +2,82 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timbratura con campo vcf_1_1</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timbratura Mobile</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
-    .container { background: white; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+    .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     input, button { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-    pre { background: #eee; padding: 10px; text-align: left; overflow-x: auto; font-size: 14px; }
+    select { width: 100%; padding: 10px; margin: 10px 0; }
+    .success { color: green; }
+    .error { color: red; }
+    pre { text-align: left; background: #eee; padding: 10px; overflow-x: auto; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Timbratura (con campo vcf_1_1)</h2>
-    <input type="text" id="auth" placeholder="Authorization header (es. Basic XXX)">
-    <input type="text" id="userId" placeholder="assigned_user_id (es. 19x5)">
-    <button onclick="submit()">Invia Timbratura</button>
-    <h3>Risposta:</h3>
-    <pre id="response">...</pre>
+  <div class="container" id="loginBox">
+    <h2>Accesso Timbratura</h2>
+    <input type="text" id="username" placeholder="Nome utente (es. gabriele.faccia)">
+    <input type="password" id="accessKey" placeholder="Access Key">
+    <button onclick="login()">Accedi</button>
+    <p id="loginMsg" class="error"></p>
+  </div>
+
+  <div class="container" id="timbraturaBox" style="display:none;">
+    <h2>Timbratura Mobile</h2>
+    <select id="tipo">
+      <option value="Entrata">Entrata</option>
+      <option value="Uscita">Uscita</option>
+    </select>
+    <button onclick="timbra()">Timbra Ora</button>
+    <p id="esito" class="success"></p>
+    <pre id="debugLog"></pre>
+    <button onclick="logout()">Logout</button>
   </div>
 
   <script>
-    function submit() {
-      const auth = document.getElementById("auth").value;
-      const userId = document.getElementById("userId").value;
+    let basicToken = "";
+    let assignedUserId = "";
+    let currentUsername = "";
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const accessKey = document.getElementById("accessKey").value;
+      basicToken = btoa(username + ":" + accessKey);
+      currentUsername = username;
+
+      const payload = {
+        elementType: "Users",
+        fields: ["id"],
+        conditions: [["user_name", "equals", username]]
+      };
+
+      fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/query", {
+        method: "POST",
+        headers: {
+          "Authorization": "Basic " + basicToken,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.result.length > 0) {
+          assignedUserId = data.result[0].id;
+          document.getElementById("loginBox").style.display = "none";
+          document.getElementById("timbraturaBox").style.display = "block";
+        } else {
+          document.getElementById("loginMsg").innerText = "Credenziali non valide o utente non trovato.";
+        }
+      })
+      .catch(err => {
+        document.getElementById("loginMsg").innerText = "Errore: " + err;
+      });
+    }
+
+    function timbra() {
+      const tipo = document.getElementById("tipo").value;
 
       navigator.geolocation.getCurrentPosition(pos => {
         const lat = pos.coords.latitude;
@@ -42,37 +94,49 @@
           const payload = {
             elementType: "Timbrature",
             element: {
-              timbrature_name: "Timbratura da Web",
-              tipo_timbratura: "Entrata",
+              timbrature_name: "timbratura mobile",
+              tipo_timbratura: tipo,
               latitudine: lat,
               longitudine: lon,
               indirizzo: indirizzo,
               data: dataStr,
               ora: ora,
-              assigned_user_id: userId,
-              vcf_1_1: "gabriele.faccia"
+              assigned_user_id: assignedUserId,
+              vcf_1_1: currentUsername
             }
           };
 
           fetch("https://crm.fefcentroautomazioni.it/restapi/v1/vtews/create", {
             method: "POST",
             headers: {
-              "Authorization": auth,
+              "Authorization": "Basic " + basicToken,
               "Content-Type": "application/json"
             },
             body: JSON.stringify(payload)
           })
           .then(res => res.json())
           .then(data => {
-            document.getElementById("response").textContent = JSON.stringify(data, null, 2);
-          })
-          .catch(err => {
-            document.getElementById("response").textContent = "Errore fetch: " + err;
+            if (data.success) {
+              document.getElementById("esito").innerText = "Timbratura registrata con successo!";
+              document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
+            } else {
+              document.getElementById("esito").className = "error";
+              document.getElementById("esito").innerText = "Errore: " + data.error.message;
+              document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
+            }
           });
         });
       }, () => {
-        document.getElementById("response").textContent = "Errore: Geolocalizzazione negata.";
+        document.getElementById("esito").innerText = "Errore: Geolocalizzazione non disponibile.";
       });
+    }
+
+    function logout() {
+      basicToken = "";
+      assignedUserId = "";
+      currentUsername = "";
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("timbraturaBox").style.display = "none";
     }
   </script>
 </body>
