@@ -6,35 +6,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Timbratura Mobile</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; text-align: center; }
-    .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button, select { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; }
-    .success { color: green; }
-    .error { color: red; }
-    .info { font-weight: bold; margin-top: 10px; }
-    pre { background: #eee; padding: 10px; overflow-x: auto; text-align: left; font-size: 14px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .info {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      overflow-x: auto;
+      text-align: left;
+      font-size: 14px;
+    }
+    img.logo {
+      max-width: 100%;
+      height: auto;
+      max-height: 80px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container" id="loginBox">
-    <h2>Accesso Timbratura</h2>
-    <input type="text" id="username" placeholder="Nome utente (es. gabriele.faccia)">
-    <input type="password" id="accessKey" placeholder="Access Key">
-    <button onclick="accedi()">Accedi</button>
-    <p id="loginMsg" class="error"></p>
-  </div>
+  <div class="container">
+    <img src="https://raw.githubusercontent.com/gabrielefaccia/timbrature/main/logo_fef.jpeg" alt="Logo" class="logo" />
+    <div id="loginBox">
+      <h2>Accesso Timbratura</h2>
+      <input type="text" id="username" placeholder="Nome utente (es. gabriele.faccia)">
+      <input type="password" id="accessKey" placeholder="Access Key">
+      <button onclick="accedi()">Accedi</button>
+      <p id="loginMsg" class="error"></p>
+    </div>
 
-  <div class="container" id="timbraturaBox" style="display:none;">
-    <h2>Timbratura Mobile</h2>
-    <select id="tipo">
-      <option value="Entrata">Entrata</option>
-      <option value="Uscita">Uscita</option>
-    </select>
-    <button onclick="timbra()">Timbra Ora</button>
-    <p id="esito" class="success"></p>
-    <div class="info" id="infoBox"></div>
-    <pre id="debugLog"></pre>
-    <button onclick="logout()">Logout</button>
+    <div id="timbraturaBox" style="display:none;">
+      <h2>Timbratura Mobile</h2>
+      <select id="tipo">
+        <option value="Entrata">Entrata</option>
+        <option value="Uscita">Uscita</option>
+      </select>
+      <button onclick="timbra()">Timbra Ora</button>
+      <p id="esito" class="success"></p>
+      <div class="info" id="infoBox"></div>
+      <pre id="debugLog"></pre>
+      <button onclick="logout()">Logout</button>
+    </div>
   </div>
 
   <script>
@@ -83,15 +127,15 @@
           const payload = {
             elementType: "Timbrature",
             element: {
-              timbrature_name: "timbratura mobile",
-              tipo_timbratura: tipo,
-              latitudine: lat.toString(),
-              longitudine: lon.toString(),
-              indirizzo: indirizzo,
-              data: dataStr,
-              ora: ora,
+              vcf_1_1: "timbratura mobile",
+              vcf_1_2: tipo,
+              vcf_1_3: lat.toString(),
+              vcf_1_4: lon.toString(),
+              vcf_1_5: indirizzo,
+              vcf_1_6: dataStr,
+              vcf_1_7: ora,
               assigned_user_id: assignedUserId,
-              vcf_1_1: currentUsername
+              description: "Timbratura via mobile da " + currentUsername
             }
           };
 
