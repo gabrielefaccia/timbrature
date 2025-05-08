@@ -164,6 +164,10 @@
           .then(res => res.json())
           .then(data => {
             if (data.success) {
+              document.getElementById("esito").style.display = "block";
+              document.getElementById("esito").style.backgroundColor = "#e6ffe6";
+              document.getElementById("esito").style.border = "1px solid green";
+              document.getElementById("esito").style.padding = "10px";
               document.getElementById("esito").innerText = "Timbratura registrata con successo!";
               document.getElementById("esito").className = "success";
               document.getElementById("infoBox").innerText = `Data/Ora: ${dataStr} ${ora}\nIndirizzo: ${indirizzo}`;
