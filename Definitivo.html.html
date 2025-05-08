@@ -167,7 +167,7 @@
             const msg = document.getElementById("messaggioBox");
             if (data.success) {
               msg.className = "success";
-              window.location.href = `conferma_timbratura.html?data=${dataStr}&ora=${ora}&indirizzo=${encodeURIComponent(indirizzo)}`;
+              window.location.href = `${window.location.origin}${window.location.pathname.replace(/\/[^\/]*$/, "/conferma_timbratura.html")}?data=${dataStr}&ora=${ora}&indirizzo=${encodeURIComponent(indirizzo)}`;
               document.getElementById("infoBox").innerText = `Data/Ora: ${dataStr} ${ora}\nIndirizzo: ${indirizzo}`;
               document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
             } else {
