@@ -148,7 +148,7 @@
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              window.location.href = "conferma_timbratura.html?data=" + dataStr + "&ora=" + ora + "&indirizzo=" + encodeURIComponent(indirizzo);
+              document.getElementById("debugLog").textContent = "Risposta VTE:\n" + JSON.stringify(data, null, 2);
             } else {
               alert("Errore: " + data.error.message);
             }
