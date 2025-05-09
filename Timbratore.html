@@ -74,7 +74,7 @@
   </div>
 
   <script>
-
+    
 function formatSecondsToTime(secStr) {
   const sec = parseInt(secStr);
   const hrs = String(Math.floor(sec / 3600)).padStart(2, '0');
@@ -82,6 +82,7 @@ function formatSecondsToTime(secStr) {
   const secs = String(sec % 60).padStart(2, '0');
   return `${hrs}:${mins}:${secs}`;
 }
+
 
     let basicToken = "";
     let currentUsername = "";
@@ -164,7 +165,7 @@ function formatSecondsToTime(secStr) {
               banner.style.backgroundColor = "#d4edda";
               banner.style.color = "#155724";
               banner.innerText = `Timbratura di ${tipo.toLowerCase()} registrata alle ${formatSecondsToTime(data.data.vcf_1_7)} del ${data.data.vcf_1_6} all’indirizzo:\n${data.data.vcf_1_5}`;
-              document.getElementById("infoBox").innerText = "";
+              document.querySelector("button[onclick='timbra()']").style.display = "none";
             } else {
               banner.className = "";
               banner.style.backgroundColor = "#f8d7da";
@@ -186,6 +187,7 @@ function formatSecondsToTime(secStr) {
       document.getElementById("loginBox").style.display = "block";
       document.getElementById("infoBox").innerText = "";
       document.getElementById("msgBanner").style.display = "none";
+      document.querySelector("button[onclick='timbra()']").style.display = "inline-block";
     }
   </script>
 </body>
