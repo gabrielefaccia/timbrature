@@ -157,11 +157,14 @@
             const msg = document.getElementById("msg");
             if (data.status === 200 && data.data && data.data.id) {
               msg.className = "message";
-              msg.innerText = "Timbratura registrata con successo!";
+              msg.className = "message";
+              msg.style.display = "block";
+              msg.textContent = "Timbratura registrata con successo!";
               document.getElementById("infoBox").innerText = `ID: ${data.data.id}\nData/Ora: ${data.data.vcf_1_6} ${data.data.vcf_1_7}\nIndirizzo: ${data.data.vcf_1_5}`;
             } else {
               msg.className = "message error";
-              msg.innerText = "Errore: timbratura non registrata.";
+              msg.style.display = "block";
+              msg.textContent = "Errore: timbratura non registrata.";
             }
           });
         });
