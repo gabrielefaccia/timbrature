@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Timbratura Mobile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timbratura Debug Completo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -148,6 +148,8 @@
           })
           .then(res => res.json())
           .then(data => {
+            console.log("RISPOSTA VTE:", data);
+            alert("Risposta dal server:\n" + JSON.stringify(data, null, 2));
             const msg = document.getElementById("msg");
             msg.style.display = "block";
             if (data.status === 200 && data.data && data.data.id) {
