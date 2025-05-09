@@ -149,7 +149,7 @@
           .then(res => res.json())
           .then(data => {
             console.log("RISPOSTA VTE:", data);
-            alert("Risposta dal server:\n" + JSON.stringify(data, null, 2));
+            
             const msg = document.getElementById("msg");
             const banner = document.getElementById("msgBanner");
               banner.style.display = "block";
