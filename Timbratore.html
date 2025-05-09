@@ -166,6 +166,7 @@ function formatSecondsToTime(secStr) {
               banner.style.color = "#155724";
               banner.innerText = `Timbratura di ${tipo.toLowerCase()} registrata alle ${formatSecondsToTime(data.data.vcf_1_7)} del ${data.data.vcf_1_6} all’indirizzo:\n${data.data.vcf_1_5}`;
               document.querySelector("button[onclick='timbra()']").style.display = "none";
+              document.getElementById("tipo").style.display = "none";
             } else {
               banner.className = "";
               banner.style.backgroundColor = "#f8d7da";
@@ -188,6 +189,7 @@ function formatSecondsToTime(secStr) {
       document.getElementById("infoBox").innerText = "";
       document.getElementById("msgBanner").style.display = "none";
       document.querySelector("button[onclick='timbra()']").style.display = "inline-block";
+      document.getElementById("tipo").style.display = "inline-block";
     }
   </script>
 </body>
