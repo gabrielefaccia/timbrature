@@ -35,16 +35,10 @@
       margin-top: 10px;
       font-weight: bold;
       color: green;
+      display: block;
     }
     .error {
       color: red;
-    }
-    pre {
-      background: #eee;
-      padding: 10px;
-      overflow-x: auto;
-      text-align: left;
-      font-size: 14px;
     }
     img.logo {
       max-width: 100%;
@@ -73,7 +67,7 @@
         <option value="Uscita">Uscita</option>
       </select>
       <button onclick="timbra()">Timbra Ora</button>
-      <p class="message" id="msg"></p>
+      <p class="message" id="msg" style="display:none;"></p>
       <div class="info" id="infoBox"></div>
       <button onclick="logout()">Logout</button>
     </div>
@@ -155,15 +149,13 @@
           .then(res => res.json())
           .then(data => {
             const msg = document.getElementById("msg");
+            msg.style.display = "block";
             if (data.status === 200 && data.data && data.data.id) {
               msg.className = "message";
-              msg.className = "message";
-              msg.style.display = "block";
               msg.textContent = "Timbratura registrata con successo!";
               document.getElementById("infoBox").innerText = `ID: ${data.data.id}\nData/Ora: ${data.data.vcf_1_6} ${data.data.vcf_1_7}\nIndirizzo: ${data.data.vcf_1_5}`;
             } else {
               msg.className = "message error";
-              msg.style.display = "block";
               msg.textContent = "Errore: timbratura non registrata.";
             }
           });
@@ -180,6 +172,8 @@
       document.getElementById("timbraturaBox").style.display = "none";
       document.getElementById("loginBox").style.display = "block";
       document.getElementById("infoBox").innerText = "";
+      document.getElementById("msg").style.display = "none";
+      document.getElementById("msg").textContent = "";
     }
   </script>
 </body>
