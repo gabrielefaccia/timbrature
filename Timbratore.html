@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Timbratura Mobile</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#006400"/>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -75,14 +77,19 @@
 
   <script>
     
-function formatSecondsToTime(secStr) {
-  const sec = parseInt(secStr);
-  const hrs = String(Math.floor(sec / 3600)).padStart(2, '0');
-  const mins = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
-  const secs = String(sec % 60).padStart(2, '0');
-  return `${hrs}:${mins}:${secs}`;
-}
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function() { console.log('Service Worker registrato'); });
+  }
 
+
+    function formatSecondsToTime(secStr) {
+      const sec = parseInt(secStr);
+      const hrs = String(Math.floor(sec / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+      const secs = String(sec % 60).padStart(2, '0');
+      return `${hrs}:${mins}:${secs}`;
+    }
 
     let basicToken = "";
     let currentUsername = "";
@@ -171,13 +178,12 @@ function formatSecondsToTime(secStr) {
               banner.className = "";
               banner.style.backgroundColor = "#f8d7da";
               banner.style.color = "#721c24";
-              banner.innerText = "Errore: timbratura non registrata.";
+              banner.innerText = "Errore: timbratura non registrata. (Riprovare quando avrai più connessione)";
             }
           });
         });
       }, () => {
         alert("Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.");
-        document.getElementById("infoBox").innerText = "";
       });
     }
 
@@ -186,10 +192,9 @@ function formatSecondsToTime(secStr) {
       currentUsername = "";
       document.getElementById("timbraturaBox").style.display = "none";
       document.getElementById("loginBox").style.display = "block";
-      document.getElementById("infoBox").innerText = "";
       document.getElementById("msgBanner").style.display = "none";
-      document.querySelector("button[onclick='timbra()']").style.display = "inline-block";
       document.getElementById("tipo").style.display = "inline-block";
+      document.querySelector("button[onclick='timbra()']").style.display = "inline-block";
     }
   </script>
 </body>
