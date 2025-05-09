@@ -74,6 +74,15 @@
   </div>
 
   <script>
+
+function formatSecondsToTime(secStr) {
+  const sec = parseInt(secStr);
+  const hrs = String(Math.floor(sec / 3600)).padStart(2, '0');
+  const mins = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+  const secs = String(sec % 60).padStart(2, '0');
+  return `${hrs}:${mins}:${secs}`;
+}
+
     let basicToken = "";
     let currentUsername = "";
     const assignedUserId = "19x4";
@@ -154,7 +163,7 @@
               banner.className = "";
               banner.style.backgroundColor = "#d4edda";
               banner.style.color = "#155724";
-              banner.innerText = `Timbratura di ${tipo.toLowerCase()} registrata alle ${data.data.vcf_1_7} del ${data.data.vcf_1_6} all’indirizzo:\n${data.data.vcf_1_5}`;
+              banner.innerText = `Timbratura di ${tipo.toLowerCase()} registrata alle ${formatSecondsToTime(data.data.vcf_1_7)} del ${data.data.vcf_1_6} all’indirizzo:\n${data.data.vcf_1_5}`;
               document.getElementById("infoBox").innerText = "";
             } else {
               banner.className = "";
