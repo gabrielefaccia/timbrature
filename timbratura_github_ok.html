@@ -25,22 +25,6 @@
       margin: 10px 0;
       font-size: 16px;
     }
-    .success {
-      color: green;
-      font-weight: bold;
-      font-size: 18px;
-      margin-top: 20px;
-    }
-    .error {
-      color: red;
-      font-weight: bold;
-      font-size: 18px;
-      margin-top: 20px;
-    }
-    .info {
-      font-weight: bold;
-      margin-top: 10px;
-    }
     .clock {
       font-size: 24px;
       margin-bottom: 10px;
@@ -81,7 +65,6 @@
         <option value="Uscita">Uscita</option>
       </select>
       <button onclick="timbra()">Timbra Ora</button>
-      <p id="messaggioBox" class=""></p>
       <div class="info" id="infoBox"></div>
       <pre id="debugLog"></pre>
       <button onclick="logout()">Logout</button>
@@ -164,23 +147,15 @@
           })
           .then(res => res.json())
           .then(data => {
-            const msg = document.getElementById("messaggioBox");
             if (data.success) {
-              msg.className = "success";
-              window.location.href = `${window.location.origin}${window.location.pathname.replace(/\/[^\/]*$/, "/conferma_timbratura.html")}?data=${dataStr}&ora=${ora}&indirizzo=${encodeURIComponent(indirizzo)}`;
-              document.getElementById("infoBox").innerText = `Data/Ora: ${dataStr} ${ora}\nIndirizzo: ${indirizzo}`;
-              document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
+              window.location.href = "conferma_timbratura.html?data=" + dataStr + "&ora=" + ora + "&indirizzo=" + encodeURIComponent(indirizzo);
             } else {
-              msg.className = "error";
-              msg.innerText = "Errore: " + data.error.message;
-              document.getElementById("debugLog").textContent = JSON.stringify(data, null, 2);
+              alert("Errore: " + data.error.message);
             }
           });
         });
       }, () => {
-        const msg = document.getElementById("messaggioBox");
-        msg.className = "error";
-        msg.innerText = "Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.";
+        alert("Geolocalizzazione negata. Vai in Impostazioni > Browser > Posizione e attivala per questo sito.");
         document.getElementById("infoBox").innerText = "";
       });
     }
@@ -191,7 +166,6 @@
       document.getElementById("timbraturaBox").style.display = "none";
       document.getElementById("loginBox").style.display = "block";
       document.getElementById("infoBox").innerText = "";
-      document.getElementById("messaggioBox").innerText = "";
       document.getElementById("debugLog").textContent = "";
     }
   </script>
