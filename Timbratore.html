@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Timbratura Mobile</title>
+  <title>Debug Timbratura</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -147,11 +147,8 @@
           })
           .then(res => res.json())
           .then(data => {
-            if (data.success) {
-              document.getElementById("debugLog").textContent = "SUCCESSO: " + data.success + "\n\n" + JSON.stringify(data, null, 2);
-            } else {
-              alert("Errore: " + data.error.message);
-            }
+            console.log("RISPOSTA VTE:", data);
+            alert("Risposta JSON ricevuta:\n" + JSON.stringify(data, null, 2));
           });
         });
       }, () => {
