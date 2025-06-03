@@ -1,7 +1,7 @@
 {
   "name": "Timbratura Mobile",
   "short_name": "Timbratura",
-  "start_url": "timbratura_pwa_ready.html",
+  "start_url": "Timbratore.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#006400",
